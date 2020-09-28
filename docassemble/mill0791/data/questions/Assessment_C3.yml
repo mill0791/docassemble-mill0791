@@ -1,0 +1,95 @@
+---
+objects:
+  - endpoint: DADict
+---
+# Mandatory code block
+mandatory: True
+code: |
+
+  LRMdisplay_welcome_screen
+
+  if LRM_family_member == True:
+     LRM_eligible_endpoint_1
+  else:
+    if LRM_family_member_consent == True:
+      LRM_eligible_endpoint_2
+    else:
+      LRM_ineligible_endpoint
+---
+code: |
+  LRMdisplay_welcome_screen = True
+  force_ask('LRMwelcome_screen')
+---
+# Welcome Screen
+event: LRMwelcome_screen
+question: Welcome
+subquestion: |
+  This application seeks to determine whether you are a family member, or if you aren't then will determine whether you like pets (assuming you have consent from a family member)
+buttons:
+  - Continue: continue
+  - Exit: exit
+---
+#Family member question
+question: Are you a member of this family?
+yesno: LRM_family_member
+---
+#Family member consent question
+question: Do you have consent from a family member?
+yesno: LRM_family_member_consent
+---
+# Ineligible Endpoint
+event: LRM_ineligible_endpoint
+question: Ineligible
+subquestion: |
+  This app can only be run by a family member or if a family member has consented to another using it
+    - Please obtain consent from a family member and try again
+buttons:
+  - Try again: restart
+  - Exit: exit
+---
+# Eligible Endpoint 1
+event: LRM_eligible_endpoint_1
+question: Your family and their pet preferences
+subquestion: |
+  Your name is ${ LRM_which_family_member }
+  
+buttons:
+  - Restart: restart
+  - Exit: exit
+---
+#Eligible Endpoint 2
+event: LRM_eligible_endpoint_2
+question: Your preferences
+subquestion: |
+  Your name is ${ LRMfirstname } ${ LRMlastname }.
+  You ${ LRM_pets }
+  
+buttons:
+  - Restart: restart
+  - Exit: exit
+---
+# Your information question
+question: Your Information
+fields:
+  - First Name: LRMfirstname
+  - Last Name: LRMlastname
+---
+# Do you like pets (only if you aren't a family member)
+question: |
+  Do you like pets?
+field: LRM_pets
+buttons:
+  - Yes: are a lover of pets.
+  - No: do not like pets at all.
+---
+# Selecting your name from a list of names
+question: |
+  Which family member are you?
+field: LRM_which_family_member
+choices:
+  - Homer Simpson
+  - Marge Simpson
+  - Bart Simpson
+  - Lisa Simpson
+  - Maggie Simpson
+---

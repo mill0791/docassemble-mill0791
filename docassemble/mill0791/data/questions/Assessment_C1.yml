@@ -1,0 +1,90 @@
+# Assesment C1
+---
+objects:
+  - endpoint: DADict
+---
+mandatory: true
+question: 
+  Federal Court Document
+subquestion: |
+  This application has been created in order to help you through the court process and to fill in a court form with your details.
+
+  *Disclaimer:*
+
+  * This form should be checked by a lawyer before being submitted,
+  * This app does not give legal advice.
+  
+buttons:
+  - Continue: continue
+  - Exit: exit
+    url: http://www.courts.sa.gov.au/Pages/default.aspx
+---
+mandatory: True
+question: Your Information
+fields:
+  - Salutation: MJFsalutation
+    choices:
+      - Dr
+      - Mr
+      - Mrs
+      - Ms
+  - First Name: MJFfirstname
+  - Last Name: MJFlastname
+---
+question: |
+  Which court is the file to be completed?
+field: MJFcourt
+dropdown:
+  - Supreme Court
+  - District Court
+  - Magistrates Court
+  - Federal Court
+  - Federal Circuit Court
+mandatory: true
+---
+# This code determines if the user is able to use the app based on court selection
+mandatory: true
+code: |
+ if MJFcourt == 'Federal Court':
+    endpoint['eligible']
+ if MJFcourt == 'Federal Circuit Court':
+    endpoint['eligible']
+ if MJFcourt == 'Magistrates Court':
+    endpoint['ineligible']
+ if MJFcourt == 'Supreme Court':
+    endpoint['ineligible']
+ if MJFcourt == 'District Court':
+    endpoint['ineligible']
+---
+# Ineligible Endpoint
+event: endpoint['ineligible']
+question: Eligibility requirements not met
+subquestion:
+  It appears you do not meet our eligibility requirements. This app will only prepare forms for the Federal Court or the Federal Court of Appeal. For more information press Exit to be taken to the SA Courts Website.
+buttons:
+  - Exit: exit
+    url: http://www.courts.sa.gov.au/Pages/default.aspx
+---
+# Eligible endpoint
+event: endpoint['eligible']
+question: You are eligible
+subquestion: |
+  Download your copy of your form here, or you can email it to yourself.
+  
+  Info|Your Details
+  -------|-------
+  Court Filed|${ MJFcourt }
+  Salutation|${ MJFsalutation }
+  First Name|${ MJFfirstname }
+  Last Name|${ MJFlastname }
+
+attachments:
+  - name: Federal Court Form
+    filename: Federal_Court_Form
+    docx template file: First_Docassemble_Template.docx
+
+buttons:
+  - Restart: restart
+  - Exit: exit
+    url: http://www.courts.sa.gov.au/Pages/default.aspx
+---
